@@ -1,0 +1,10 @@
+# JWT files
+*.jwt
+
+# VS Code Config
+.vscode/
+
+# Python Config
+_pycache_/
+
+~*
