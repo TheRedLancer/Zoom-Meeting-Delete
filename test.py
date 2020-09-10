@@ -41,8 +41,8 @@ def getMeetings():
     headers = {'authorization': 'Bearer %s' % generateToken(),
                'content-type': 'application/json'}
 
-    r = requests.get('https://api.zoom.us/v2/meetings/87301886454/recordings', headers=headers)
+    r = requests.get('https://api.zoom.us/v2/meetings', headers=headers)
 
     return(r)
 
-jprint(getMeetings().json()["uuid"])
+jprint(getMeetings().json())
