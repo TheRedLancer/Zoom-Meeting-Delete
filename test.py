@@ -1,8 +1,6 @@
-import requests
+
+import API
 import json
-import jwt
-from time import time
-import secrets
 
 
 def jprint(obj):
@@ -12,44 +10,15 @@ def jprint(obj):
     print(text)
 
 
-API_KEY = "pP13W03hT7CLEKpVZqZBLw"
+with open("APIKey.jwt", "r") as jwtFile:
+    JWT = jwtFile.read().splitlines()
 
-API_SECRET = "6Rnhhgr9efz50Julz2HhIZ0z90XCftfuqhkm"
+API_KEY = JWT[0]
+API_SECRET = JWT[1]
 
-# create a function to generate a token using the pyjwt library
-# Grabbed from https://devforum.zoom.us/t/zoom-jwt-token-creation-automate-the-process/17708 Code by user michael.harrington
+#jprint(API.getUsers(API_KEY,API_SECRET, "EboregvTQKyB6e-q2jlFpQ").json())
 
+jprint(API.getAccountRecordings(API_KEY, API_SECRET, 'me', "2020-08-12",
+                                "2020-08-29", "N4erQu8Jt1t3LW0JdSwFOFjMADKS6OgzHp2").json())
 
-def generateToken():
-    token = jwt.encode(
-        # Create a payload of the token containing API Key & expiration time
-        {"iss": API_KEY, "exp": time() + 5000},
-        # Secret used to generate token signature
-        API_SECRET,
-        # Specify the hashing alg
-        algorithm='HS256'
-        # Convert token to utf-8
-    ).decode('utf-8')
-
-    return token
-
-
-def getUsers():
-    headers = {'authorization': 'Bearer %s' % generateToken(),
-               'content-type': 'application/json'}
-
-    r = requests.get('https://api.zoom.us/v2/users/', headers=headers)
-
-    return(r)
-
-
-def getMeetings():
-    headers = {'authorization': 'Bearer %s' % generateToken(),
-               'content-type': 'application/json'}
-
-    r = requests.get('https://api.zoom.us/v2/meetings', headers=headers)
-
-    return(r)
-
-
-jprint(getUsers().json())
+jwtFile.close()
