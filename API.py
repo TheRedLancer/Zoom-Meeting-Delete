@@ -19,19 +19,22 @@ def generateToken(API_KEY, API_SECRET):
 
     return token
 
-def getUsers(API_KEY, API_SECRET): 
+def getUsers(API_KEY, API_SECRET, userID = ''): 
     headers = {'authorization': 'Bearer %s' % generateToken(API_KEY, API_SECRET),
                'content-type': 'application/json'}
     querystring = {"page_number":"3","page_size": "3"}
 
-    r = requests.get('https://api.zoom.us/v2/users', headers=headers, params=querystring)
+    r = requests.get('https://api.zoom.us/v2/users/' + userID, headers=headers, params=querystring)
 
     return(r)
 
-def getMeetings(API_KEY, API_SECRET):
+def getAccountRecordings(API_KEY, API_SECRET, accountID, fromDate, toDate, nextPageToken = ''):
     headers = {'authorization': 'Bearer %s' % generateToken(API_KEY, API_SECRET),
                'content-type': 'application/json'}
 
-    r = requests.get('https://api.zoom.us/v2/meetings', headers=headers)
+    querystring = {"page_size":"1", "from": fromDate, "to": toDate, "next_page_token": nextPageToken}
+
+    r = requests.get('https://api.zoom.us/v2/accounts/' + accountID + "/recordings", params= querystring, headers=headers)
 
     return(r)
+
