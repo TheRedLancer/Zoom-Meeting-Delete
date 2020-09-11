@@ -35,7 +35,3 @@ def getMeetings(API_KEY, API_SECRET):
     r = requests.get('https://api.zoom.us/v2/meetings', headers=headers)
 
     return(r)
-
-
-
-#alec.fitelson@kennedyhs.org
