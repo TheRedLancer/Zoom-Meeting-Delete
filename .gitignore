@@ -5,6 +5,6 @@
 .vscode/
 
 # Python Config
-_pycache_/
+__pycache__/
 
 ~*

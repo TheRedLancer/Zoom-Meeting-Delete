@@ -34,7 +34,16 @@ def getAccountRecordings(API_KEY, API_SECRET, accountID, fromDate, toDate, nextP
 
     querystring = {"page_size":"1", "from": fromDate, "to": toDate, "next_page_token": nextPageToken}
 
-    r = requests.get('https://api.zoom.us/v2/accounts/' + accountID + "/recordings", params= querystring, headers=headers)
+    r = requests.get('https://api.zoom.us/v2/accounts/' + accountID + "/recordings", headers=headers, params= querystring)
 
     return(r)
 
+def deleteMeetingRecordings(API_KEY, API_SECRET, meetingID, action = "trash"):
+    headers = {'authorization': 'Bearer %s' % generateToken(API_KEY, API_SECRET),
+               'content-type': 'application/json'}
+
+    querystring = {"action": action}
+
+    r = requests.delete('https://api.zoom.us/v2/meeting/' + str(meetingID) + "/recordings", headers=headers, params= querystring)
+
+    return(r)
