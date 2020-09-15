@@ -1,7 +1,6 @@
 import API
 import json
 
-
 def jprint(obj):
     # Create and print string of JSON Object
     # Grabbed from "https://www.dataquest.io/blog/python-api-tutorial/"
@@ -68,6 +67,11 @@ while next_page_token != '':
 
 print("Number of meetings to delete:", len(meetingsToDelete))
 
+def deleteMeeting(API_KEY, API_SECRET, meetingUUID):
+    # Request delete
+    n = API.deleteMeetingRecordings(API_KEY, API_SECRET, meeting)
+    # Print MeetingID and API Response
+    print(meeting, n)
 
 def deleteMeetings(API_KEY, API_SECRET, meetingsToDelete):
     for meeting in meetingsToDelete:
