@@ -15,9 +15,64 @@ with open("APIKey.jwt", "r") as jwtFile:
 API_KEY = JWT[0]
 API_SECRET = JWT[1]
 
-#jprint(API.getUsers(API_KEY,API_SECRET, "EboregvTQKyB6e-q2jlFpQ").json())
+meetingsToDelete = []
 
-jprint(API.getAccountRecordings(API_KEY, API_SECRET, 'me', "2020-08-12",
-                                "2020-08-29", "N4erQu8Jt1t3LW0JdSwFOFjMADKS6OgzHp2").json())
+startDate = "2020-08-20"
+endDate = "2020-08-26"
+
+# Make first call
+r = API.getAccountRecordings(
+    API_KEY, API_SECRET, 'me', startDate, endDate, "")
+# Convert response to JSON
+apiRecording = r.json()
+# Print returned call
+# jprint(apiRecording)
+# Set next page token variable
+next_page_token = apiRecording['next_page_token']
+# Don't delete kchszoom recordings
+if apiRecording["meetings"][0]["host_email"] != "kchszoom@kennedyhs.org":
+    # Append Meeting ID to meetingsToDelete
+    meetingsToDelete.append(apiRecording["meetings"][0]["uuid"])
+# Print Meeting ID
+print(apiRecording["meetings"][0]["uuid"], r,
+      apiRecording["meetings"][0]["host_email"],
+      apiRecording["meetings"][0]["topic"])
+# Line Break
+# print("-------------------------------------------------")
+
+while next_page_token != '':
+    # Make sequential call with next page token from prev call
+    apiRecording = API.getAccountRecordings(
+        API_KEY, API_SECRET, 'me', startDate, endDate, next_page_token).json()
+    # Print returned call
+    # jprint(apiRecording)
+    # Set next page token variable
+    next_page_token = apiRecording['next_page_token']
+    # If the name of the user is not the school's account, append the MeetingID to the delete queue
+    if apiRecording["meetings"][0]["host_email"] != "kchszoom@kennedyhs.org":
+        # Append Meeting ID to meetingsToDelete
+        meetingsToDelete.append(apiRecording["meetings"][0]["uuid"])
+    # Print MeetingID
+    print(apiRecording["meetings"][0]["uuid"], r,
+          apiRecording["meetings"][0]["host_email"],
+          apiRecording["meetings"][0]["topic"])
+    # Line Break
+    # print("-------------------------------------------------")
+
+# print(meetingsToDelete)
+print("Number of meetings to delete:", len(meetingsToDelete))
+# Delete all meetings in the meetingsToDelete array
+
+
+def deleteMeetings(API_KEY, API_SECRET, meetingsToDelete):
+    for meeting in meetingsToDelete:
+        # Request delete
+        n = API.deleteMeetingRecordings(API_KEY, API_SECRET, meeting)
+        # Print MeetingID and API Response
+        print(meeting, n)
+
+
+deleteMeetings(API_KEY, API_SECRET, meetingsToDelete)
+
 
 jwtFile.close()

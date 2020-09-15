@@ -41,6 +41,44 @@ def getAccountRecordings(API_KEY, API_SECRET, accountID, fromDate, toDate, nextP
                    "to": toDate, "next_page_token": nextPageToken}
 
     r = requests.get('https://api.zoom.us/v2/accounts/' + accountID +
-                     "/recordings", params=querystring, headers=headers)
+                     "/recordings", headers=headers, params=querystring)
+
+    return(r)
+
+
+def getUserRecordings(API_KEY, API_SECRET, userID, fromDate, toDate, nextPageToken=''):
+    headers = {'authorization': 'Bearer %s' % generateToken(API_KEY, API_SECRET),
+               'content-type': 'application/json'}
+
+    querystring = {"page_size": "1", "from": fromDate,
+                   "to": toDate, "next_page_token": nextPageToken}
+
+    r = requests.get('https://api.zoom.us/v2/users/' + userID +
+                     "/recordings", headers=headers, params=querystring)
+
+    return(r)
+
+
+def deleteMeetingRecordings(API_KEY, API_SECRET, meetingID, action="trash"):
+    headers = {'authorization': 'Bearer %s' % generateToken(API_KEY, API_SECRET),
+               'content-type': 'application/json'}
+
+    querystring = {"action": action}
+
+    r = requests.delete('https://api.zoom.us/v2/meetings/' + str(meetingID) +
+                        "/recordings", headers=headers, params=querystring)
+
+    return(r)
+
+
+def updateUserFirstName(API_KEY, API_SECRET, userID, newFirstName):
+    headers = {'authorization': 'Bearer %s' % generateToken(API_KEY, API_SECRET),
+               'content-type': 'application/json'}
+    querystring = {"login_type": "101"}
+
+    payload = "{\"first_name\":\"" + newFirstName + "\"}"
+
+    r = requests.patch('https://api.zoom.us/v2/users/' + str(userID), data=payload,
+                       headers=headers, params=querystring)
 
     return(r)
