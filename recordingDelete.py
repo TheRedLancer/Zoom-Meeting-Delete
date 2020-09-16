@@ -2,7 +2,7 @@
 # recordingDelete.py
 # Author: Zach Burnaby (mailto:zachary.burnaby@kennedyhs.org)
 # Project: Zoom Recording Management
-# Last Modified: 2020-09-15
+# Last Modified: 2020-09-16
 #
 # Purpose: 
 # This program will delete meeting recordings given
@@ -33,14 +33,15 @@ def double_encode(uuid):
             newUUID += "%252F"
         elif c == "=":
             newUUID += "%253D"
+        elif c == "+":
+            newUUID += "%252B"
         else:
             newUUID += c
-
     return newUUID
 
 def delete_meeting(API_KEY, API_SECRET, meeting_UUID):
     error_message = ""
-    
+
     # Request delete
     n = API.deleteMeetingRecordings(API_KEY, API_SECRET, double_encode(meeting_UUID))
 
@@ -57,40 +58,27 @@ with open("APIKey.jwt", "r") as jwt_file:
 API_KEY = JWT[0]
 API_SECRET = JWT[1]
 
-start_date = "2020-09-04"
-end_date = "2020-09-06"
+start_date = "2020-08-01"
+end_date = "2020-09-03"
 
-next_page_token = ""
+# Make API call to get meetings in the date range
+response = API.getAccountRecordings(
+        API_KEY, API_SECRET, 'me', start_date, end_date)
 
-# Simulate a do-while loop
-first_call = True
+# Convert API response to JSON
+response_json = response.json()
 
-while ((first_call == True) or (next_page_token != "")):
-    first_call = False
+# Print API Response
+# jprint(response_json)
 
-    # Make API call to get the next meeting in the date range
-    response = API.getAccountRecordings(
-        API_KEY, API_SECRET, 'me', start_date, end_date, next_page_token)
+for meeting in response_json["meetings"]:
+    print("[GET]    ", meeting["uuid"], response,
+            meeting["host_email"],
+            meeting["topic"])
 
-    # Convert API response to JSON
-    api_recording = response.json()
-
-    # Print API response
-    # jprint(api_recording)
-
-    next_page_token = api_recording["next_page_token"]
-
-    if api_recording["meetings"]:
-        # Print Meeting Data
-        print("[GET]    ", api_recording["meetings"][0]["uuid"], response,
-            api_recording["meetings"][0]["host_email"],
-            api_recording["meetings"][0]["topic"])
-
-        # Do not delete meetings from "kchszoom"
-        if api_recording["meetings"][0]["host_email"] != "kchszoom@kennedyhs.org":
-            #print("Delete UUID:", double_encode(api_recording["meetings"][0]["uuid"]))
-            delete_meeting(API_KEY, API_SECRET, api_recording["meetings"][0]["uuid"])
-    else:
-        jprint(api_recording)
+    # Do not delete meetings from "kchszoom"
+    if meeting["host_email"] != "kchszoom@kennedyhs.org":
+        #print("Delete UUID:", double_encode(meeting["uuid"]))
+        delete_meeting(API_KEY, API_SECRET, meeting["uuid"])
 
 print("Job Complete")

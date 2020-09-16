@@ -2,7 +2,7 @@
 # API.py
 # Author: Zach Burnaby (mailto:zachary.burnaby@kennedyhs.org)
 # Project: Zoom Recording Management
-# Last Modified: 2020-09-15
+# Last Modified: 2020-09-16
 #
 # Purpose: 
 # This provides helper functions for connectivity to api.zoom.us for
@@ -15,7 +15,6 @@
 # Functions defined: generateToken(), getUsers(), getAccountRecordings()
 # getUserRecordings(), deleteMeetingRecordings(), updateUserFirstName()
 #  
-
 
 import requests
 import json
@@ -44,7 +43,7 @@ def generateToken(API_KEY, API_SECRET):
 def getUsers(API_KEY, API_SECRET, userID=''):
     headers = {'authorization': 'Bearer %s' % generateToken(API_KEY, API_SECRET),
                'content-type': 'application/json'}
-    querystring = {"page_number": "3", "page_size": "3"}
+    querystring = {"page_number": "1", "page_size": "3"}
 
     r = requests.get('https://api.zoom.us/v2/users/' + userID,
                      headers=headers, params=querystring)
@@ -56,7 +55,7 @@ def getAccountRecordings(API_KEY, API_SECRET, accountID, fromDate, toDate, nextP
     headers = {'authorization': 'Bearer %s' % generateToken(API_KEY, API_SECRET),
                'content-type': 'application/json'}
 
-    querystring = {"page_size": "1", "from": fromDate,
+    querystring = {"page_size": "300", "from": fromDate,
                    "to": toDate, "next_page_token": nextPageToken}
 
     r = requests.get('https://api.zoom.us/v2/accounts/' + accountID +
