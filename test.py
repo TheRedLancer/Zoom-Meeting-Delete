@@ -1,6 +1,6 @@
 import API
 import json
-from urllib.parse import quote
+import urllib.parse as urllib
 
 def jprint(obj):
     # Create and print string of JSON Object
@@ -85,7 +85,7 @@ def deleteMeetings(API_KEY, API_SECRET, meetingsToDelete):
 # Delete all meetings in the meetingsToDelete array
 #deleteMeetings(API_KEY, API_SECRET, meetingsToDelete)
 for meeting in meetingsToDelete:
-    print(quote(meeting, safe=""))
+    print(urllib.quote_plus(meeting))
 
 
 jwt_file.close()
