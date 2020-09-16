@@ -48,8 +48,8 @@ with open("APIKey.jwt", "r") as jwt_file:
 API_KEY = JWT[0]
 API_SECRET = JWT[1]
 
-start_date = "2020-09-02"
-end_date = "2020-09-03"
+start_date = "2020-09-03"
+end_date = "2020-09-04"
 
 next_page_token = ""
 
