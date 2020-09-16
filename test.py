@@ -14,13 +14,8 @@ with open("APIKey.jwt", "r") as jwt_file:
 API_KEY = JWT[0]
 API_SECRET = JWT[1]
 
-<<<<<<< HEAD
-startDate = "2020-08-20"
-endDate = "2020-09-03"
-=======
 start_date = "2020-08-20"
 endDate = "2020-08-26"
->>>>>>> 8dba88254c55650dc6c3e948d0c415cfd50bffc2
 
 meetingsToDelete = []
 
