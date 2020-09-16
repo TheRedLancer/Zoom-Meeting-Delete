@@ -16,7 +16,7 @@ API_KEY = JWT[0]
 API_SECRET = JWT[1]
 
 startDate = "2020-08-20"
-endDate = "2020-08-26"
+endDate = "2020-09-03"
 
 meetingsToDelete = []
 
@@ -78,7 +78,7 @@ def deleteMeetings(API_KEY, API_SECRET, meetingsToDelete):
 
 
 # Delete all meetings in the meetingsToDelete array
-deleteMeetings(API_KEY, API_SECRET, meetingsToDelete)
+# deleteMeetings(API_KEY, API_SECRET, meetingsToDelete)
 
 
 jwtFile.close()
