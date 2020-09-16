@@ -1,3 +1,22 @@
+"""Zoom API Interface"""
+# API.py
+# Author: Zach Burnaby (mailto:zachary.burnaby@kennedyhs.org)
+# Project: Zoom Recording Management
+# Last Modified: 2020-09-15
+#
+# Purpose: 
+# This provides helper functions for connectivity to api.zoom.us for
+# recordingDelete.py using the requests library.
+#
+# Contributors: Zach Burnaby
+#
+# Imports: requests, json, jwt, time, secrets
+#
+# Functions defined: generateToken(), getUsers(), getAccountRecordings()
+# getUserRecordings(), deleteMeetingRecordings(), updateUserFirstName()
+#  
+
+
 import requests
 import json
 import jwt
@@ -5,8 +24,8 @@ from time import time
 import secrets
 
 # create a function to generate a token using the pyjwt library
-# Copied from https://devforum.zoom.us/t/zoom-jwt-token-creation-automate-the-process/17708 Code by user michael.harrington
-
+# Copied from https://devforum.zoom.us/t/zoom-jwt-token-creation-automate-the-process/17708 
+# Code by user michael.harrington
 
 def generateToken(API_KEY, API_SECRET):
     token = jwt.encode(
