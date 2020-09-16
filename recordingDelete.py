@@ -2,7 +2,7 @@
 # recordingDelete.py
 # Author: Zach Burnaby (mailto:zachary.burnaby@kennedyhs.org)
 # Project: Zoom Recording Management
-# Last Modified: 2020-09-15
+# Last Modified: 2020-09-16
 #
 # Purpose: 
 # This program will delete meeting recordings given
@@ -14,11 +14,8 @@
 #
 # Imports: API, json
 #
-# Functions defined: jprint(obj), delete_meeting(API_KEY, API_SECRET, meeting_UUID)
+# Functions defined: jprint(), delete_meeting(), double_encode
 #
-#
-#
-
 
 import API
 import json
@@ -29,12 +26,24 @@ def jprint(obj):
     text = json.dumps(obj, sort_keys=True, indent=4)
     print(text)
 
+def double_encode(uuid):
+    newUUID = ""
+    for c in uuid:
+        if c == "/":
+            newUUID += "%252F"
+        elif c == "=":
+            newUUID += "%253D"
+        elif c == "+":
+            newUUID += "%252B"
+        else:
+            newUUID += c
+    return newUUID
 
 def delete_meeting(API_KEY, API_SECRET, meeting_UUID):
     error_message = ""
 
     # Request delete
-    n = API.deleteMeetingRecordings(API_KEY, API_SECRET, meeting_UUID)
+    n = API.deleteMeetingRecordings(API_KEY, API_SECRET, double_encode(meeting_UUID))
 
     if n.status_code >= 400:
         error_message = n.json()["message"]
@@ -43,41 +52,33 @@ def delete_meeting(API_KEY, API_SECRET, meeting_UUID):
     print("[DELETE] ", meeting_UUID, n, error_message)
 
 
+
 with open("APIKey.jwt", "r") as jwt_file:
     JWT = jwt_file.read().splitlines()
 API_KEY = JWT[0]
 API_SECRET = JWT[1]
 
-start_date = "2020-09-02"
+start_date = "2020-08-01"
 end_date = "2020-09-03"
 
-next_page_token = ""
+# Make API call to get meetings in the date range
+response = API.getAccountRecordings(
+        API_KEY, API_SECRET, 'me', start_date, end_date)
 
-# Simulate a do-while loop
-first_call = True
+# Convert API response to JSON
+response_json = response.json()
 
-while ((first_call == True) or (next_page_token != "")):
-    first_call = False
+# Print API Response
+# jprint(response_json)
 
-    # Make API call to get the next meeting in the date range
-    response = API.getAccountRecordings(
-        API_KEY, API_SECRET, 'me', start_date, end_date, next_page_token)
-
-    # Convert API response to JSON
-    api_recording = response.json()
-
-    # Print API response
-    jprint(api_recording)
-
-    next_page_token = api_recording["next_page_token"]
-
-    # Print Meeting Data
-    print("[GET]    ", api_recording["meetings"][0]["uuid"], response,
-          api_recording["meetings"][0]["host_email"],
-          api_recording["meetings"][0]["topic"])
+for meeting in response_json["meetings"]:
+    print("[GET]    ", meeting["uuid"], response,
+            meeting["host_email"],
+            meeting["topic"])
 
     # Do not delete meetings from "kchszoom"
-    if api_recording["meetings"][0]["host_email"] != "kchszoom@kennedyhs.org":
-        delete_meeting(API_KEY, API_SECRET, api_recording["meetings"][0]["uuid"])
+    if meeting["host_email"] != "kchszoom@kennedyhs.org":
+        #print("Delete UUID:", double_encode(meeting["uuid"]))
+        delete_meeting(API_KEY, API_SECRET, meeting["uuid"])
 
 print("Job Complete")
