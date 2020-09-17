@@ -72,6 +72,7 @@ response_json = response.json()
 # jprint(response_json)
 
 for meeting in response_json["meetings"]:
+    # Print ghost GET request and data
     print("[GET]    ", meeting["uuid"], response,
             meeting["host_email"],
             meeting["topic"])
