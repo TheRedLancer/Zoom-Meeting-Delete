@@ -16,6 +16,10 @@
 #
 # Functions defined: jprint(), delete_meeting(), double_encode
 #
+# Future Features:
+# TODO Make a whitelist for who to not delete
+# TODO Add command line args for manually deleting date-range
+# TODO Output metrics to CSV [meeting id, time of delete, errors, meeting host]
 
 import API
 import json
@@ -51,15 +55,16 @@ def delete_meeting(API_KEY, API_SECRET, meeting_UUID):
     # Print MeetingID and API Response
     print("[DELETE] ", meeting_UUID, n, error_message)
 
-
+# Add users to this list you do NOT want meetings deleted
+USER_WHITELIST = ["kchszoom@kennedyhs.org", "mohsm@kennedyhs.org"]
 
 with open("APIKey.jwt", "r") as jwt_file:
     JWT = jwt_file.read().splitlines()
 API_KEY = JWT[0]
 API_SECRET = JWT[1]
 
-start_date = "2020-08-01"
-end_date = "2020-09-03"
+start_date = "2020-09-04"
+end_date = "2020-09-08"
 
 # Make API call to get meetings in the date range
 response = API.getAccountRecordings(
@@ -77,9 +82,9 @@ for meeting in response_json["meetings"]:
             meeting["host_email"],
             meeting["topic"])
 
-    # Do not delete meetings from "kchszoom"
-    if meeting["host_email"] != "kchszoom@kennedyhs.org":
-        #print("Delete UUID:", double_encode(meeting["uuid"]))
+    # Do not delete meetings from whitelisted users
+    if meeting["host_email"] not in USER_WHITELIST:
+        # print("Delete UUID:", double_encode(meeting["uuid"]))
         delete_meeting(API_KEY, API_SECRET, meeting["uuid"])
 
 print("Job Complete")

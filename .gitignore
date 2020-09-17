@@ -7,4 +7,7 @@
 # Python Config
 __pycache__/
 
+# Profile Picture
+*.png
+
 ~*

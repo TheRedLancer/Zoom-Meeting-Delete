@@ -14,6 +14,7 @@
 #
 # Functions defined: generateToken(), getUsers(), getAccountRecordings()
 # getUserRecordings(), deleteMeetingRecordings(), updateUserFirstName()
+# postUserProfilePicture()
 #  
 
 import requests
@@ -100,3 +101,15 @@ def updateUserFirstName(API_KEY, API_SECRET, userID, newFirstName):
                        headers=headers, params=querystring)
 
     return(r)
+
+"""
+def postUserProfilePicture(API_KEY, API_SECRET, userID):
+    headers = {'authorization': 'Bearer %s' % generateToken(API_KEY, API_SECRET),
+               'content-type': 'multipart/form-data'}
+
+    file = {"pic_file": open("kennedySeal.png", 'rb')}
+
+    r = requests.post("https://api.zoom.us/v2/users/me/picture", headers=headers, files=file)
+
+    return(r)
+"""
