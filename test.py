@@ -1,3 +1,8 @@
+"""USED FOR ZBURNABY TO TEST"""
+# This file will be deleted when I post Version 1.0
+# I use this to test python code without modifying my working file
+# It probably isn't the best practice as I should learn about Git branches
+
 import API
 import json
 import urllib.parse as urllib
