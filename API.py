@@ -113,3 +113,13 @@ def postUserProfilePicture(API_KEY, API_SECRET, userID):
 
     return(r)
 """
+def updateMeetingSettings(API_KEY, API_SECRET, meetingID):
+    headers = {'authorization': 'Bearer %s' % generateToken(API_KEY, API_SECRET),
+               'content-type': 'application/json'}
+    
+    payload = "{\"password\":\"\"}"
+
+    r = requests.patch('https://api.zoom.us/v2/meetings/' + str(meetingID) + "/recordings/settings", data=payload,
+                       headers=headers)
+
+    return(r)

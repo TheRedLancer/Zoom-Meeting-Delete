@@ -64,7 +64,7 @@ API_KEY = JWT[0]
 API_SECRET = JWT[1]
 
 start_date = "2020-09-04"
-end_date = "2020-09-08"
+end_date = "2020-09-05"
 
 # Make API call to get meetings in the date range
 response = API.getAccountRecordings(
@@ -75,6 +75,10 @@ response_json = response.json()
 
 # Print API Response
 # jprint(response_json)
+next_page_token = response_json["next_page_token"]
+print("Page Size  " + str(response_json["page_size"]))
+print("Total Records  " + str(response_json["total_records"]))
+
 
 for meeting in response_json["meetings"]:
     # Print ghost GET request and data
@@ -82,6 +86,8 @@ for meeting in response_json["meetings"]:
             meeting["host_email"],
             meeting["topic"])
 
+    # if meeting["host_email"] == "":
+    #    print(API.updateMeetingSettings(API_KEY, API_SECRET, meeting["uuid"]))
     # Do not delete meetings from whitelisted users
     if meeting["host_email"] not in USER_WHITELIST:
         # print("Delete UUID:", double_encode(meeting["uuid"]))
