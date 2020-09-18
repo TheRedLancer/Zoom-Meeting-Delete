@@ -9,5 +9,6 @@ __pycache__/
 
 # Profile Picture
 *.png
+*.jpg
 
 ~*

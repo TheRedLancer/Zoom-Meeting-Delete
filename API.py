@@ -4,7 +4,7 @@
 # Project: Zoom Recording Management
 # Last Modified: 2020-09-16
 #
-# Purpose: 
+# Purpose:
 # This provides helper functions for connectivity to api.zoom.us for
 # recordingDelete.py using the requests library.
 #
@@ -15,7 +15,7 @@
 # Functions defined: generateToken(), getUsers(), getAccountRecordings()
 # getUserRecordings(), deleteMeetingRecordings(), updateUserFirstName()
 # postUserProfilePicture()
-#  
+#
 
 import requests
 import json
@@ -24,8 +24,9 @@ from time import time
 import secrets
 
 # create a function to generate a token using the pyjwt library
-# Copied from https://devforum.zoom.us/t/zoom-jwt-token-creation-automate-the-process/17708 
+# Copied from https://devforum.zoom.us/t/zoom-jwt-token-creation-automate-the-process/17708
 # Code by user michael.harrington
+
 
 def generateToken(API_KEY, API_SECRET):
     token = jwt.encode(
@@ -41,10 +42,10 @@ def generateToken(API_KEY, API_SECRET):
     return token
 
 
-def getUsers(API_KEY, API_SECRET, userID=''):
+def getUsers(API_KEY, API_SECRET, userID='', next_page_token=""):
     headers = {'authorization': 'Bearer %s' % generateToken(API_KEY, API_SECRET),
                'content-type': 'application/json'}
-    querystring = {"page_number": "1", "page_size": "3"}
+    querystring = {"page_size": "300", "next_page_token": next_page_token}
 
     r = requests.get('https://api.zoom.us/v2/users/' + userID,
                      headers=headers, params=querystring)
@@ -102,21 +103,26 @@ def updateUserFirstName(API_KEY, API_SECRET, userID, newFirstName):
 
     return(r)
 
-"""
-def postUserProfilePicture(API_KEY, API_SECRET, userID):
+
+def postUserProfilePicture(API_KEY, API_SECRET, userID=""):
     headers = {'authorization': 'Bearer %s' % generateToken(API_KEY, API_SECRET),
-               'content-type': 'multipart/form-data'}
+               'Accept': 'application/json'}
 
-    file = {"pic_file": open("kennedySeal.png", 'rb')}
+    img_path = "kennedy.jpg"
 
-    r = requests.post("https://api.zoom.us/v2/users/me/picture", headers=headers, files=file)
+    files = {"pic_file": (img_path.split(
+        '/')[-1], open(img_path, 'rb'), 'image/jpg')}
+
+    r = requests.post(
+        "https://api.zoom.us/v2/users/" + userID + "/picture", headers=headers, files=files)
 
     return(r)
-"""
+
+
 def updateMeetingSettings(API_KEY, API_SECRET, meetingID):
     headers = {'authorization': 'Bearer %s' % generateToken(API_KEY, API_SECRET),
                'content-type': 'application/json'}
-    
+
     payload = "{\"password\":\"\"}"
 
     r = requests.patch('https://api.zoom.us/v2/meetings/' + str(meetingID) + "/recordings/settings", data=payload,
