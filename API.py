@@ -16,6 +16,9 @@
 # getUserRecordings(), deleteMeetingRecordings(), updateUserFirstName()
 # postUserProfilePicture()
 #
+# Student role id: REmx8Df9GT-6Q9AnHTDpAbw
+#
+
 
 import requests
 import json
@@ -42,10 +45,11 @@ def generateToken(API_KEY, API_SECRET):
     return token
 
 
-def getUsers(API_KEY, API_SECRET, userID='', next_page_token=""):
+def getUsers(API_KEY, API_SECRET, page_number="", role_id="REmx8Df9GT-6Q9AnHTDpAbw", userID=''):
     headers = {'authorization': 'Bearer %s' % generateToken(API_KEY, API_SECRET),
                'content-type': 'application/json'}
-    querystring = {"page_size": "300", "next_page_token": next_page_token}
+    querystring = {"page_size": "300",
+                   "role_id": role_id, "page_number": str(page_number)}
 
     r = requests.get('https://api.zoom.us/v2/users/' + userID,
                      headers=headers, params=querystring)

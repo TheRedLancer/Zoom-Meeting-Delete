@@ -68,7 +68,6 @@ with open("APIKey.jwt", "r") as jwt_file:
 API_KEY = JWT[0]
 API_SECRET = JWT[1]
 
-
 start_date = "2020-09-08"
 end_date = "2020-09-09"
 
@@ -102,41 +101,28 @@ for meeting in response_json["meetings"]:
 print("Job Complete")
 
 
-'''
+# Code block to effect all students
 
-# Make API call to get meetings in the date range
-response = API.getUsers(API_KEY, API_SECRET)
-
-# Convert API response to JSON
-response_json = response.json()
-
-# Print API Response
-# jprint(response_json)
-next_page_token = response_json["next_page_token"]
-print("Page Size  " + str(response_json["page_size"]))
-print("Total Records  " + str(response_json["total_records"]))
+"""
+page_count = API.getUsers(API_KEY, API_SECRET).json()["page_count"]
+print(page_count)
 
 
-for user in response_json["users"]:
-    res = API.postUserProfilePicture(API_KEY, API_SECRET, user["id"])
-    print(res)
+for i in range(page_count):
+    print("PAGE:", i + 1)
 
-while next_page_token != '':
-    # Make sequential call with next page token from prev call
-    response = API.getUsers(API_KEY, API_SECRET, "", next_page_token)
+    # Make API call to get meetings in the date range
+    response = API.getUsers(API_KEY, API_SECRET, i + 1)
 
     # Convert API response to JSON
     response_json = response.json()
-    # Print returned call (debugging)
-    # jprint(apiRecording)
 
-    # Set next page token variable
-    next_page_token = response_json['next_page_token']
-    print("Page Size  " + str(response_json["page_size"]))
-    print("Total Records  " + str(response_json["total_records"]))
+    # Print API Response
+    # jprint(response_json)
 
     for user in response_json["users"]:
         res = API.postUserProfilePicture(API_KEY, API_SECRET, user["id"])
-        print(res)
+        print(res, user["first_name"], user["last_name"])
 
-'''
+
+"""
