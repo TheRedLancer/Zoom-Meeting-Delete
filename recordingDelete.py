@@ -23,7 +23,7 @@
 
 import API
 import json
-
+import datetime
 
 def jprint(obj):
     # Create and print string of JSON Object
@@ -59,46 +59,56 @@ def delete_meeting(API_KEY, API_SECRET, meeting_UUID):
     # Print MeetingID and API Response
     print("[DELETE] ", meeting_UUID, n, error_message)
 
+def main():
+    today = datetime.date.today()
+    beginning_delta = datetime.timedelta(days=12)
+    end_delta = datetime.timedelta(days=11)
+    print(beginning_delta)
+    print(end_delta)
+    start_date = str(today - beginning_delta)
+    end_date = str(today - end_delta)
+    print(start_date)
+    print(end_date)
 
-# Add users to this list you do NOT want meetings deleted
-USER_WHITELIST = ["kchszoom@kennedyhs.org", "mohsm@kennedyhs.org"]
+    """Starter function"""
+    # Add users to this list you do NOT want meetings deleted
+    USER_WHITELIST = ["kchszoom@kennedyhs.org", "mohsm@kennedyhs.org"]
 
-with open("APIKey.jwt", "r") as jwt_file:
-    JWT = jwt_file.read().splitlines()
-API_KEY = JWT[0]
-API_SECRET = JWT[1]
+    with open("APIKey.jwt", "r") as jwt_file:
+        JWT = jwt_file.read().splitlines()
+        
+    API_KEY = JWT[0]
+    API_SECRET = JWT[1]
 
-start_date = "2020-09-08"
-end_date = "2020-09-09"
+    # Make API call to get meetings in the date range
+    response = API.getAccountRecordings(
+        API_KEY, API_SECRET, 'me', start_date, end_date)
 
-# Make API call to get meetings in the date range
-response = API.getAccountRecordings(
-    API_KEY, API_SECRET, 'me', start_date, end_date)
+    # Convert API response to JSON
+    response_json = response.json()
 
-# Convert API response to JSON
-response_json = response.json()
-
-# Print API Response
-# jprint(response_json)
-# next_page_token = response_json["next_page_token"]
-print("Page Size  " + str(response_json["page_size"]))
-print("Total Records  " + str(response_json["total_records"]))
+    # Print API Response
+    # jprint(response_json)
+    # next_page_token = response_json["next_page_token"]
+    print("Page Size  " + str(response_json["page_size"]))
+    print("Total Records  " + str(response_json["total_records"]))
 
 
-for meeting in response_json["meetings"]:
-    # Print ghost GET request and data
-    print("[GET]    ", meeting["uuid"], response,
-          meeting["host_email"],
-          meeting["topic"])
+    for meeting in response_json["meetings"]:
+        # Print ghost GET request and data
+        print("[GET]    ", meeting["uuid"], response,
+            meeting["host_email"],
+            meeting["topic"])
 
-    # if meeting["host_email"] == "":
-    #    print(API.updateMeetingSettings(API_KEY, API_SECRET, meeting["uuid"]))
-    # Do not delete meetings from whitelisted users
-    if meeting["host_email"] not in USER_WHITELIST:
-        # print("Delete UUID:", double_encode(meeting["uuid"]))
-        delete_meeting(API_KEY, API_SECRET, meeting["uuid"])
+        # if meeting["host_email"] == "":
+        #    print(API.updateMeetingSettings(API_KEY, API_SECRET, meeting["uuid"]))
+        # Do not delete meetings from whitelisted users
+        if meeting["host_email"] not in USER_WHITELIST:
+            # print("Delete UUID:", double_encode(meeting["uuid"]))
+            delete_meeting(API_KEY, API_SECRET, meeting["uuid"])
 
-print("Job Complete")
+    print("Job Complete")
+
 
 
 # Code block to effect all students
