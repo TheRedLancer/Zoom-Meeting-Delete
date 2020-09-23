@@ -65,8 +65,8 @@ def main():
     end_delta = datetime.timedelta(days=11)
     print(beginning_delta)
     print(end_delta)
-    start_date = str(today - beginning_delta)
-    end_date = str(today - end_delta)
+    start_date = "2020-09-13" #str(today - beginning_delta)
+    end_date = "2020-09-14"#str(today - end_delta)
     print(start_date)
     print(end_date)
 
