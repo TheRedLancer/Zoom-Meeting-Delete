@@ -110,7 +110,7 @@ def main():
     print("Job Complete")
 
 
-
+main()
 # Code block to effect all students
 
 """
