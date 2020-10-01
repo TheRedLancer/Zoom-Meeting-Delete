@@ -80,35 +80,40 @@ def main():
         
     API_KEY = JWT[0]
     API_SECRET = JWT[1]
+    next_page_token = ""
+    first_call = True
 
-    # Make API call to get meetings in the date range
-    response = API.getAccountRecordings(
-        API_KEY, API_SECRET, 'me', start_date, end_date)
+    while(next_page_token != "" or first_call == True):
+        first_call == False
+    
+        # Make API call to get meetings in the date range
+        response = API.getAccountRecordings(
+            API_KEY, API_SECRET, 'me', start_date, end_date, next_page_token)
+        
+        # Convert API response to JSON
+        response_json = response.json()
 
-    # Convert API response to JSON
-    response_json = response.json()
-
-    # Print API Response
-    # jprint(response_json)
-    # next_page_token = response_json["next_page_token"]
-    print("Page Size  " + str(response_json["page_size"]))
-    print("Total Records  " + str(response_json["total_records"]))
+        next_page_token = response_json["next_page_token"]
+        # Print API Response
+        # jprint(response_json)
+        # next_page_token = response_json["next_page_token"]
+        print("Page Size  " + str(response_json["page_size"]))
+        print("Total Records  " + str(response_json["total_records"]))
 
 
-    for meeting in response_json["meetings"]:
-        # Print ghost GET request and data
-        print("[GET]    ", meeting["uuid"], response,
-            meeting["host_email"],
-            meeting["topic"])
+        for meeting in response_json["meetings"]:
+            # Print ghost GET request and data
+            print("[GET]    ", meeting["uuid"], response,
+                meeting["host_email"],
+                meeting["topic"])
 
-        # if meeting["host_email"] == "":
-        #    print(API.updateMeetingSettings(API_KEY, API_SECRET, meeting["uuid"]))
-        # Do not delete meetings from whitelisted users
-        if meeting["host_email"] not in USER_WHITELIST:
-            # print("Delete UUID:", double_encode(meeting["uuid"]))
-            delete_meeting(API_KEY, API_SECRET, meeting["uuid"])
 
-    print("Job Complete")
+            # Do not delete meetings from whitelisted users
+            if meeting["host_email"] not in USER_WHITELIST:
+                # print("Delete UUID:", double_encode(meeting["uuid"]))
+                delete_meeting(API_KEY, API_SECRET, meeting["uuid"])
+
+        print("Job Complete")
 
 if __name__ == "__main__":
     main()
