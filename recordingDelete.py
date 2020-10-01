@@ -65,12 +65,13 @@ def main():
     end_delta = datetime.timedelta(days=11)
     print(beginning_delta)
     print(end_delta)
-    start_date = "2020-09-13" #str(today - beginning_delta)
-    end_date = "2020-09-14"#str(today - end_delta)
+
+    # CHANGE THE DATES HERE
+    start_date = "2020-09-18" #str(today - beginning_delta)
+    end_date = "2020-09-18" #str(today - end_delta)
     print(start_date)
     print(end_date)
 
-    """Starter function"""
     # Add users to this list you do NOT want meetings deleted
     USER_WHITELIST = ["kchszoom@kennedyhs.org", "mohsm@kennedyhs.org"]
 
@@ -109,8 +110,8 @@ def main():
 
     print("Job Complete")
 
-
-main()
+if __name__ == "__main__":
+    main()
 # Code block to effect all students
 
 """
