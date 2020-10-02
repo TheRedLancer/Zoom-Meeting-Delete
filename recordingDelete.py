@@ -59,18 +59,22 @@ def delete_meeting(API_KEY, API_SECRET, meeting_UUID):
     # Print MeetingID and API Response
     print("[DELETE] ", meeting_UUID, n, error_message)
 
-def main():
+def run_delete():
     today = datetime.date.today()
-    beginning_delta = datetime.timedelta(days=12)
-    end_delta = datetime.timedelta(days=11)
-    print(beginning_delta)
-    print(end_delta)
+    print("Today:", today)
+    if (today.weekday() < 2):
+        delta = datetime.timedelta(days=11)
+    else:
+        delta = datetime.timedelta(days=9)
+    print("Delta:",delta)
+    print("Day to Delete:",str(today - delta))
 
     # CHANGE THE DATES HERE
-    start_date = "2020-09-18" #str(today - beginning_delta)
-    end_date = "2020-09-18" #str(today - end_delta)
-    print(start_date)
-    print(end_date)
+    start_date = "2020-09-21" #str(today - delta)
+    end_date = "2020-09-23" #str(today - delta)
+    print("-" * 50)
+    #print(start_date)
+    #print(end_date)
 
     # Add users to this list you do NOT want meetings deleted
     USER_WHITELIST = ["kchszoom@kennedyhs.org", "mohsm@kennedyhs.org"]
@@ -83,8 +87,8 @@ def main():
     next_page_token = ""
     first_call = True
 
-    while(next_page_token != "" or first_call == True):
-        first_call == False
+    while((next_page_token != '') or (first_call)):
+        first_call = False
     
         # Make API call to get meetings in the date range
         response = API.getAccountRecordings(
@@ -94,6 +98,7 @@ def main():
         response_json = response.json()
 
         next_page_token = response_json["next_page_token"]
+        
         # Print API Response
         # jprint(response_json)
         # next_page_token = response_json["next_page_token"]
@@ -111,9 +116,15 @@ def main():
             # Do not delete meetings from whitelisted users
             if meeting["host_email"] not in USER_WHITELIST:
                 # print("Delete UUID:", double_encode(meeting["uuid"]))
-                delete_meeting(API_KEY, API_SECRET, meeting["uuid"])
-
+                #delete_meeting(API_KEY, API_SECRET, meeting["uuid"])
+                pass
+        
         print("Job Complete")
+
+def main():
+    if(datetime.date.today().weekday() < 5):
+        run_delete()
+
 
 if __name__ == "__main__":
     main()
